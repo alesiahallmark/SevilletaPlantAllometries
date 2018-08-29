@@ -1,4 +1,5 @@
 ### This script matches quad observations with known and inferred allometries to estimate biomass 
+# Created and maintained by: Alesia Hallmark
 
 # Load required libraries
 library(ggplot2)
