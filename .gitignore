@@ -1,0 +1,10 @@
+# Ignore RData and other files
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+
+# Ignore .html and .pdf files created when knitting RMarkdown files
+*.html
+*.pdf
+

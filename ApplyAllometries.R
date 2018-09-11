@@ -15,9 +15,61 @@ library(xtable)
 library(zoo)
 library(tidyr)
 library(data.table)
+library(readxl)
+library(XLConnect)
 
 # Read in all quad data
 allquads <- read.csv("/Users/alesia/Desktop/unsorted_AJdata/AJ_AllQuads.csv", strip.white = T)
+
+
+### TEMP
+rawedgefiles <- list.files(path = "~/Desktop/EDGE/anpp/raw_data_sheets", pattern = "anpp.10", full.names = T)[list.files(path = "~/Desktop/EDGE/anpp/raw_data_sheets", pattern = "anpp.10", full.names = T) %in% list.files(path = "~/Desktop/EDGE/anpp/raw_data_sheets", pattern = "2016.xlsx", full.names = T)]
+
+for (i in 1:length(rawedgefiles)) {
+  # Read in files
+  one.file <- as.data.frame(read_excel(rawedgefiles[i]))
+  
+  for (j in 1:nrow(one.file)) {
+    if (is.na(one.file$site[j])) {
+      one.file$site[j] <- one.file$site[j-1]}
+    #if (is.na(one.file$block[j])) {
+    #  one.file$block[j] <- one.file$block[j-1]}
+    if (is.na(one.file$plot[j])) {
+      one.file$plot[j] <- one.file$plot[j-1]}
+    if (is.na(one.file$treatment[j])) {
+      one.file$treatment[j] <- one.file$treatment[j-1]}
+    if (is.na(one.file$quad[j])) {
+      one.file$quad[j] <- one.file$quad[j-1]}
+    if (is.na(one.file$spp[j])) {
+      one.file$spp[j] <- one.file$spp[j-1]}}
+  
+  one.file$date <- as.Date(paste(
+    as.numeric(strsplit(rawedgefiles[i], split = "[.]")[[1]][3]),
+    as.numeric(strsplit(rawedgefiles[i], split = "[.]")[[1]][4]),
+    as.numeric(strsplit(rawedgefiles[i], split = "[.]")[[1]][5])),
+    format = "%m %d %Y")
+  
+  one.file$season <- 
+  
+  if (i == 1) raw.edge <- one.file
+  else raw.edge <- join(raw.edge, one.file, by=intersect(colnames(raw.edge), colnames(one.file)), type="full")
+  
+}
+
+
+head(raw.edge)
+summary(raw.edge)
+raw.edge$site <- as.factor(raw.edge$site)
+raw.edge$treatment <- as.factor(raw.edge$treatment)
+raw.edge$spp <- as.factor(raw.edge$spp)
+
+summary(allquads[allquads$dataset == "sev297",])
+
+
+
+
+
+
 
 allquads$kartez <- as.factor(toupper(allquads$kartez))
 
